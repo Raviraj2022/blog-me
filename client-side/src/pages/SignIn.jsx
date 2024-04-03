@@ -1,8 +1,5 @@
-
 const SignIn = () => {
-  return (
-    <div>SignIn</div>
-  )
-}
+  return <div className="min-h-screen">Sign Up</div>;
+};
 
-export default SignIn
+export default SignIn;
