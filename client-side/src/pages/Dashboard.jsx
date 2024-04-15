@@ -21,6 +21,7 @@ const Dashboard = () => {
         <DashSidebar />
       </div>
       {/*  profile... */}
+
       {tab === "profile" && <DashProfile />}
     </div>
   );
