@@ -2,7 +2,7 @@ import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
-const JWT_SECRET = "asdfghjkwertyuzxcvbnm";
+ const JWT_SECRET = "asdfghjkwertyuzxcvbnm";
 export const signup = async (req, res, next) => {
   //   console.log("Hii");
   const { username, email, password } = req.body;
