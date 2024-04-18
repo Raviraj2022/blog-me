@@ -21,6 +21,7 @@ import {
 } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 export default function DashProfile() {
   const [imageFile, setImageFile] = useState(null);
@@ -35,7 +36,7 @@ export default function DashProfile() {
   const filePickRef = useRef();
   const dispatch = useDispatch();
   // console.log(imageFileUploadProgress, imageFileUploadError);
-  const { currentUser, error } = useSelector((state) => state.user);
+  const { currentUser, error, loading } = useSelector((state) => state.user);
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -244,9 +245,26 @@ export default function DashProfile() {
           onChange={handleChange}
           //   defaultValue={currentUser.password}
         />
-        <Button type="submit" gradientDuoTone="purpleToBlue" outline>
-          Update
+        <Button
+          type="submit"
+          gradientDuoTone="purpleToBlue"
+          outline
+          disabled={loading || imageFileUploading}
+        >
+          {loading ? "Loading..." : "Update"}
         </Button>
+        {currentUser.isAdmin && (
+          <Link to={"/createPost"}>
+            {" "}
+            <Button
+              type="button"
+              gradientDuoTone="purpleToPink"
+              className="w-full"
+            >
+              Create a post
+            </Button>
+          </Link>
+        )}
       </form>
       <div className="text-red-500 flex justify-between mt-5">
         <span onClick={() => setShowModal(true)} className="cursor-pointer">
