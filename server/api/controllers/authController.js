@@ -2,7 +2,7 @@ import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
- const JWT_SECRET = "asdfghjkwertyuzxcvbnm";
+const JWT_SECRET = "asdfghjkwertyuzxcvbnm";
 export const signup = async (req, res, next) => {
   //   console.log("Hii");
   const { username, email, password } = req.body;
@@ -52,6 +52,7 @@ export const signin = async (req, res, next) => {
     const token = jwt.sign(
       {
         id: validUser._id,
+        isAdmin: validUser.isAdmin,
       },
       JWT_SECRET
     );
@@ -73,7 +74,10 @@ export const google = async (req, res, next) => {
     const user = await User.findOne({ email });
     console.log(user);
     if (user) {
-      const token = jwt.sign({ id: user._id }, JWT_SECRET);
+      const token = jwt.sign(
+        { id: user._id, isAdmin: user.isAdmin },
+        JWT_SECRET
+      );
       const { password, ...rest } = user._doc;
       res
         .status(200)
@@ -96,7 +100,10 @@ export const google = async (req, res, next) => {
         profilePicture: googlePhotoUrl,
       });
       await newUser.save();
-      const token = jwt.sign({ id: newUser._id }, JWT_SECRET);
+      const token = jwt.sign(
+        { id: newUser._id, isAdmin: newUser.isAdmin },
+        JWT_SECRET
+      );
       const { password, ...rest } = newUser._doc;
       res
         .status(200)
