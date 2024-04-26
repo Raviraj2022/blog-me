@@ -1,7 +1,7 @@
 import { Alert, Button, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CommentBox from "./CommentBox";
 
 export default function CommentSection({ postId }) {
@@ -9,7 +9,8 @@ export default function CommentSection({ postId }) {
   const [comment, setComment] = useState("");
   const [commentError, setCommentError] = useState(null);
   const [moreComments, setMoreComments] = useState([]);
-  console.log(moreComments);
+  // console.log(moreComments);
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -30,7 +31,7 @@ export default function CommentSection({ postId }) {
       if (res.ok) {
         setComment("");
         setCommentError(null);
-        setMoreComments([data, ...comment]);
+        setMoreComments([data, ...moreComments]);
       }
       // console.log(data);
     } catch (error) {
@@ -52,6 +53,36 @@ export default function CommentSection({ postId }) {
     };
     getComments();
   }, [postId]);
+
+  const handleLike = async (commentId) => {
+    try {
+      if (!currentUser) {
+        navigate("/signIn");
+        return;
+      }
+      const res = await fetch(`/api/comment/likeComment/${commentId}`, {
+        method: "PUT",
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setMoreComments(
+          moreComments.map((comment) => {
+            if (comment._id === commentId) {
+              return {
+                ...comment,
+                likes: data.likes,
+                numberOfLikes: data.likes.length,
+              };
+            } else {
+              return comment;
+            }
+          })
+        );
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div className="max-w-2xl mx-auto w-full p-3">
       {currentUser ? (
@@ -118,7 +149,11 @@ export default function CommentSection({ postId }) {
             </div>
           </div>
           {moreComments.map((comment) => (
-            <CommentBox key={comment._id} comment={comment} />
+            <CommentBox
+              key={comment._id}
+              comment={comment}
+              onLike={handleLike}
+            />
           ))}
         </>
       )}
