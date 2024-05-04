@@ -12,5 +12,6 @@ export default {
     // ...
     import("flowbite/plugin"),
     import("tailwind-scrollbar"),
+    // import("@tailwindcss/line-clamp"),
   ],
 };
